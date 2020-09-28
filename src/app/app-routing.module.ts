@@ -9,6 +9,8 @@ import { ServerComponent } from "./servers/server/server.component";
 import { AuthGuard } from "./auth-guard.service";
 import { UsersComponent } from "./users/users.component";
 import { CanDeactivateGuardService } from "./servers/edit-server/can-deactivate-guard.service";
+import { ErrorPageComponent } from "./error-page/error-page.component";
+import { ServerResolverService } from "./servers/server/server-resolver.service";
 
 const appRouts : Routes = [
   { path: '', component: HomeComponent },
@@ -17,16 +19,18 @@ const appRouts : Routes = [
   ]},
 
   { path: 'servers', canActivateChild: [AuthGuard], component: ServersComponent ,children: [
-    { path: ':id', component: ServerComponent },
+    { path: ':id', component: ServerComponent, resolve: {server: ServerResolverService} },
     { path: ':id/edit', component: EditServerComponent, canDeactivate : [CanDeactivateGuardService]},
   ]},
-  { path: 'not-found', component : PageNotFoundComponent},
+ /*  { path: 'not-found', component : PageNotFoundComponent}, */
+ { path: 'not-found', component : ErrorPageComponent, data: {message : 'Page not found'}},
   { path: '**', redirectTo: '/not-found'},
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(appRouts)
+   /*  RouterModule.forRoot(appRouts, {useHash: true}) // You can do like this also */
+   RouterModule.forRoot(appRouts)
   ],
   exports: [RouterModule]
 })
